@@ -39,6 +39,14 @@ spec:
   selector:
     app: api
 ---
+kind: Service
+apiVersion: v1
+metadata:
+  name: keda-interceptor-proxy
+spec:
+  type: ExternalName
+  externalName: keda-add-ons-http-interceptor-proxy.keda.svc.cluster.local
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -73,16 +81,9 @@ spec:
     replicas:
         min: 1
         max: 10
+    scaledownPeriod: 300
     scalingMetric:
         requestRate:
             granularity: 1s
             targetValue: 5
             window: 1m
----
-kind: Service
-apiVersion: v1
-metadata:
-  name: keda-interceptor-proxy
-spec:
-  type: ExternalName
-  externalName: keda-add-ons-http-interceptor-proxy.keda.svc.cluster.local
